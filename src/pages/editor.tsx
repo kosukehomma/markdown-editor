@@ -71,7 +71,7 @@ export const Editor: React.FC<Props> = (props) => {
   return(
     <React.Fragment>
       <HeaderArea>
-        <Header title="Markown Editor">
+        <Header title="Markdown Editor">
           <Button onClick={() => setShowModal(true)}>
             保存する
           </Button>
