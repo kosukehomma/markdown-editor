@@ -1,8 +1,17 @@
 import * as React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { Editor } from './pages/editor';
+import { History } from './pages/history';
+import { useStateWithStorage } from './hooks/use_state_with_storage';
+import { render } from 'react-dom';
 
 const GlobalStyle = createGlobalStyle`
   body * {
@@ -10,11 +19,40 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const Main = (
-  <>
-    <GlobalStyle />
-    <Editor />
-  </>
-);
+const StorageKey = '/editor:text';
 
-render(Main, document.getElementById('app'));
+const Main: React.FC = () => {
+  const [text, setText] = useStateWithStorage('', StorageKey);
+
+  return (
+    <>
+      <GlobalStyle />
+      <Router>
+        <Routes>
+          <Route
+            path="/editor"
+            element={
+              <Editor text={text} setText={setText} />
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <History setText={setText} />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <Navigate to="/editor" />
+            }
+          />
+        </Routes>
+      </Router>
+    </>
+  )
+}
+
+const container = document.getElementById('app');
+const root = createRoot(container);
+root.render(<Main />)
